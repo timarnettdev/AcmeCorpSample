@@ -1,0 +1,21 @@
+﻿services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "acmeCorp^&1"  # Set a strong password for the SA user
+      ACCEPT_EULA: "Y"  # Accept the End-User License Agreement
+    ports:
+      - "1433:1433"  # Expose SQL Server port
+
+  app:
+    image: acmecorpapi:dev
+    build:
+      context: .
+      dockerfile: AcmeCorp.API\Dockerfile
+    ports:
+      - "49501:80"
+    environment:
+      - "ConnectionStrings:Server=.\\SQLEXPRESS;user id=sa; password=cancer123;Database=AcmeCorp;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=true"     
+    depends_on:
+      - sqlserver
